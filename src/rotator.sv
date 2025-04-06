@@ -68,3 +68,4 @@ module rotator #(parameter WIDTH = 4) (
   assign Y = zshift[WIDTH-1:0];
 
 endmodule // rotator
+

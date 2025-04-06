@@ -1,10 +1,10 @@
 ///////////////////////////////////////////
-// priorityencoder.sv
+// reversearbiter.sv
 //
 // Written: jacobpease@protonmail.com 18 March 2022
 // Modified: 
 //
-// Purpose: Priority encoder; One-hot to binary converter
+// Purpose: Fixed priority arbiter. Highest priority is LSB.
 // 
 // A component of the Wally configurable RISC-V project.
 // 
@@ -28,20 +28,26 @@
 //   OR OTHER DEALINGS IN THE SOFTWARE.
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
-module priorityencoder #(parameter WIDTH = 4)(
-  input logic [WIDTH-1:0] onehot,
-  output logic [$clog2(WIDTH)-1:0] Y
+module fixedpriority #(parameter WIDTH = 4)(
+  input logic [WIDTH-1:0] X,
+  output logic [WIDTH-1:0] Y
 );
 
-// genvar i;
-always_comb
-begin
-  Y = '0;
-  for (int i = 0; i < WIDTH; i++) begin : priorityencoder
-    if ((1 << i) == onehot) begin
-      Y = i;
-    end  
-  end
-end
+  logic [WIDTH-1:0] cascade;
+  logic [WIDTH-2:0] forwardNot;
 
-endmodule // bintoonehot
+  assign cascade[0] = 1'b1;
+
+  genvar i;
+  generate
+    for (i = 0; i < WIDTH - 1; i++) begin : fixedPriority
+      and (cascade[i+1], forwardNot[i], cascade[i]);
+      not (forwardNot[i], X[i]);
+      and (Y[i], cascade[i], X[i]);
+    end
+  endgenerate
+
+  and (Y[WIDTH-1], cascade[WIDTH-1], X[WIDTH-1]);
+
+endmodule // fixed arbiter
+

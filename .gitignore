@@ -3,3 +3,9 @@ obj_dir
 
 # Ignore Emacs backup files
 *~
+
+# Ignore Verilog stuff
+src/work/
+src/vsim.wlf
+src/transcript
+src/sillly.sv

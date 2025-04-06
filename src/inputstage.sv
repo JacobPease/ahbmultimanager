@@ -1,4 +1,4 @@
-`include "wally-config.vh"
+/*`include "wally-config.vh"
 
 import ahbspec::*;
 
@@ -64,3 +64,4 @@ endmodule
 	-____
 
 */
+
